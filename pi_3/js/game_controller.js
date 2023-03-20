@@ -2,6 +2,10 @@ const back = "../resources/back.png";
 const items = ["../resources/cb.png","../resources/co.png","../resources/sb.png",
 "../resources/so.png","../resources/tb.png","../resources/to.png"];
 
+var inicia = false;
+var time=0;
+var dificulty = "";
+
 var game = new Vue({
 	el: "#game_id",
 	data: {
@@ -12,6 +16,10 @@ var game = new Vue({
 		bad_clicks: 0
 	},
 	created: function(){
+		var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"hard"}';
+		var menu_data = JSON.parse(json);
+		this.num_cards = menu_data.cards;
+		dificulty = menu_data.dificulty;
 		this.username = sessionStorage.getItem("username","unknown");
 		this.items = items.slice(); // Copiem l'array
 		this.items.sort(function(){return Math.random() - 0.5}); // Array aleatòria
@@ -19,8 +27,28 @@ var game = new Vue({
 		this.items = this.items.concat(this.items); // Dupliquem els elements
 		this.items.sort(function(){return Math.random() - 0.5}); // Array aleatòria
 		for (var i = 0; i < this.items.length; i++){
-			this.current_card.push({done: false, texture: back});
+			this.current_card.push({done: false, texture: this.items[i]});
 		}
+		if(menu_data.dificulty == "hard"){
+			time = 1200;
+		}
+
+		else if(menu_data.dificulty == "normal"){
+			time = 2400;
+		}
+
+		else{
+			time = 3600;
+		}
+		
+		setTimeout(() => {
+			console.log("Delayed for 1 second.");
+			for (var i = 0; i < this.items.length; i++){
+				Vue.set(this.current_card, i, {done: false, texture: back});
+			}
+
+			inicia = true;
+		},time);
 	},
 	methods: {
 		clickCard: function(i){
@@ -30,7 +58,7 @@ var game = new Vue({
 	},
 	watch: {
 		current_card: function(value){
-			if (value.texture === back) return;
+			if (value.texture === back || inicia == false) return;
 			var front = null;
 			var i_front = -1;
 			for (var i = 0; i < this.current_card.length; i++){
@@ -57,7 +85,14 @@ var game = new Vue({
 	},
 	computed: {
 		score_text: function(){
-			return 100 - this.bad_clicks * 20;
+			var fallos = 10;
+			if(dificulty == "hard"){
+				fallos = 20;
+			}
+			else if(dificulty == "normal"){
+				fallos = 15;
+			}
+			return 100 - this.bad_clicks * fallos;
 		}
 	}
 });
