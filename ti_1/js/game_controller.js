@@ -15,7 +15,9 @@ var gameObj = function (){
 			current_card: [],
 			items: [],
 			num_cards: 2,
-			bad_clicks: 0
+			bad_clicks: 0,
+			dificulty: "easy",
+			iniciat: false
 		},
 		created: function(){
 			if (l_partida){
@@ -24,6 +26,7 @@ var gameObj = function (){
 				this.items = l_partida.items;
 				this.num_cards = l_partida.num_cards;
 				this.bad_clicks = l_partida.bad_clicks;
+				this.iniciat = true
 			}
 			else{
 				this.username = sessionStorage.getItem("username","unknown");
@@ -35,6 +38,29 @@ var gameObj = function (){
 				for (var i = 0; i < this.items.length; i++){
 					this.current_card.push({done: false, texture: back});
 				}
+
+				var time = 0;
+				
+				if(menu_data.dificulty == "hard"){
+					time = 1200;
+				}
+		
+				else if(menu_data.dificulty == "normal"){
+					time = 2400;
+				}
+		
+				else{
+					time = 3600;
+				}
+				
+				setTimeout(() => {
+					console.log("Delayed for 1 second.");
+					for (var i = 0; i < this.items.length; i++){
+						Vue.set(this.current_card, i, {done: false, texture: back});
+					}
+		
+					inicia = true;
+				},time);
 			}
 			sessionStorage.clear();
 		},
@@ -43,26 +69,7 @@ var gameObj = function (){
 				if (!this.current_card[i].done && this.current_card[i].texture === back)
 					Vue.set(this.current_card, i, {done: false, texture: this.items[i]});
 			},
-			save: function(){
-				fetch("../php/save.php", {
-					method: "POST",
-					body: JSON.stringify({
-						name: this.username,
-						score: this.score_text
-					}),
-					headers: {
-						"Content-type": "application/json"
-					}
-				}).then(response => response.json()).then(json => {
-					alert(json.score);
-					this.local_save();
-				})
-				.catch((error) => {
-					alert('Error:', error);
-					this.local_save();
-				});
-			},
-			local_save: function(){
+			 save: function(){
 				let partida = {
 					username: this.username,
 					current_card: this.current_card,
@@ -109,7 +116,17 @@ var gameObj = function (){
 		},
 		computed: {
 			score_text: function(){
-				return 100 - this.bad_clicks * 20;
+				var misses = 20;
+				if (this.dificulty=="easy"){
+					misses=10;
+				}
+				else if (this.dificulty=="normal"){
+					misses=20;
+				}
+				else {
+					misses=35;
+				}
+				return 100 - this.bad_clicks * resta;
 			}
 		}
 	});

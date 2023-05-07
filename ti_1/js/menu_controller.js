@@ -30,3 +30,6 @@ function menu_ti(){
 	loadpage("./ti_1/index.html");
 }
 
+function load_lb(){
+	loadpage("./html/leaderboard.html");
+}
