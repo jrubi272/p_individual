@@ -11,7 +11,7 @@ class GameScene extends Phaser.Scene {
 		this.correct = 0;
 		this.iniciat = false;
 		this.bad_clicks=0;
-		this.saver="";
+		//this.saver="";
 		this.correctes=[];
 		this.arrayCartes = [];
 		this.items=['cb','co','sb','so','tb','to'];
@@ -91,12 +91,11 @@ class GameScene extends Phaser.Scene {
 			time = 3100;
 		}
 
-		this.saver = this.add.text(500, 500, 'Save game', {fill: '#fff'} );
-		this.saver.setBackgroundColor('#7c67a0')
-		this.saver.setInteractive();
-		this.saver.on('pointerup', ()=> {
-			this.save();
-		});
+		//this.saver = this.add.text(500, 500, 'Save game', {fill: '#fff'} );
+		//this.saver.setInteractive();
+		//this.saver.on('pointerup', ()=> {
+			//this.save();
+		//});
 		
 		setTimeout(() => {
 			let x=120;
