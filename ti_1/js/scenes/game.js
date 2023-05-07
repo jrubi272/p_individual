@@ -28,6 +28,7 @@ class GameScene extends Phaser.Scene {
 	}
 	
     create (){	
+		
 		let l_partida=null;
 		if(sessionStorage.idPartida && localStorage.partides){
 			let arrayPartides=JSON.parse(localStorage.partides);
@@ -91,7 +92,7 @@ class GameScene extends Phaser.Scene {
 			time = 3100;
 		}
 
-		//this.saver = this.add.text(500, 500, 'Save game', {fill: '#fff'} );
+		//this.saver = this.add.text(800, 800, 'Save game', {fill: '#fff'} );
 		//this.saver.setInteractive();
 		//this.saver.on('pointerup', ()=> {
 			//this.save();
