@@ -7,7 +7,19 @@ function start_game(){
 }
 
 function phaser_game(){
+	name = prompt("User name");
+	
+	sessionStorage.setItem("username", name);
+
 	loadpage("./html/phasergame.html");
+}
+
+function inf_phaser_game(){
+	name = prompt("User name");
+	
+	sessionStorage.setItem("username", name);
+	
+	loadpage("./html/infinitephasergame.html");
 }
 
 function exit (){
@@ -20,6 +32,10 @@ function exit (){
 
 function options(){
 	loadpage("./html/options.html");
+}
+
+function inf_options(){
+	loadpage("./html/infiniteoptions.html");
 }
 
 function load(){

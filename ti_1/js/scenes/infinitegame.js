@@ -11,6 +11,7 @@ class GameScene extends Phaser.Scene {
 		this.correct = 0;
 		this.iniciat = false;
 		this.bad_clicks=0;
+        this.level = 1;
 		this.saver="";
 		this.correctes=[];
 		this.arrayCartes = [];
@@ -58,20 +59,38 @@ class GameScene extends Phaser.Scene {
 			this.items = this.items.slice(0, this.num_card);
 			this.items = this.items.concat(this.items);
 			this.items.sort(function(){return Math.random() - 0.5});
-			console.log(this.correctes.length);
 			var longitud = this.items.length;
+            //en elegir el nivell al menú
+            if(this.level==3){
+				this.num_card=3;
+				this.time=this.time/2;
+			}
+			else if(this.nivell==5){
+				this.num_card=4;
+				this.tempor=this.tempor/3;
+			}
+			else if(this.nivell==7){
+				this.num_card=5;
+				this.time=this.tempor/5;
+			}
+            else if(this.nivell==10){
+				this.num_card=6;
+				this.time=this.tempor/8;
+			}
+			else{
+				this.time=2000;
+			}
 			for (var k = 0; k < longitud; k++){
 				this.arrayCartes.push(this.items[k]);
 			}
 		}
 		sessionStorage.clear();
-		this.cameras.main.setBackgroundColor(0xffffff);
+		this.cameras.main.setBackgroundColor(0xBFFCFF);
 		let x=120;
 		let y=200;
 		for (let v=0;v<this.arrayCartes.length;v++){
 			console.log(this.arrayCartes[v]);
 			this.add.image(x,y,this.arrayCartes[v]);
-
 			x+=120;
 			if(x>=550){
 				x=120;
@@ -165,6 +184,11 @@ class GameScene extends Phaser.Scene {
 						else{
 							this.correct++;
 							this.correctes.push(this.firstClick.card_id);
+                            //incrementam el nivell del joc i el nombre de cartes si el nivell es imparell
+                            this.level++;
+                            if(this.level%2 != 0){
+                                num_cards++;
+                            }
 							if(this.correct>=this.num_card){
 								alert("You WIN!!! with "+ this.score + " points.");
 								loadpage("../");

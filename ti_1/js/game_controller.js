@@ -29,28 +29,32 @@ var gameObj = function (){
 				this.iniciat = true
 			}
 			else{
+				var time = 0;
 				this.username = sessionStorage.getItem("username","unknown");
+				var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"easy"}';
+				var game_data = JSON.parse(json);
+				this.num_cards=game_data.cards;
+				this.dificultat=game_data.dificulty;
 				this.items = items.slice(); // Copiem l'array
 				this.items.sort(function(){return Math.random() - 0.5}); // Array aleatòria
 				this.items = this.items.slice(0, this.num_cards); // Agafem els primers numCards elements
 				this.items = this.items.concat(this.items); // Dupliquem els elements
 				this.items.sort(function(){return Math.random() - 0.5}); // Array aleatòria
 				for (var i = 0; i < this.items.length; i++){
-					this.current_card.push({done: false, texture: back});
+					this.current_card.push({done: false, texture: this.items[i]});
 				}
 
-				var time = 0;
 				
-				if(menu_data.dificulty == "hard"){
-					time = 1200;
+				if(game_data.dificulty == "easy"){
+					time = 3600;
 				}
 		
-				else if(menu_data.dificulty == "normal"){
+				else if(game_data.dificulty == "normal"){
 					time = 2400;
 				}
 		
 				else{
-					time = 3600;
+					time = 1200;
 				}
 				
 				setTimeout(() => {
@@ -59,7 +63,7 @@ var gameObj = function (){
 						Vue.set(this.current_card, i, {done: false, texture: back});
 					}
 		
-					inicia = true;
+					this.iniciat = true;
 				},time);
 			}
 			sessionStorage.clear();
@@ -89,29 +93,32 @@ var gameObj = function (){
 		},
 		watch: {
 			current_card: function(value){
-				if (value.texture === back) return;
-				var front = null;
-				var i_front = -1;
-				for (var i = 0; i < this.current_card.length; i++){
-					if (!this.current_card[i].done && this.current_card[i].texture !== back){
-						if (front){
-							if (front.texture === this.current_card[i].texture){
-								front.done = this.current_card[i].done = true;
-								this.num_cards--;
+				if(this.iniciat == true){
+					if (value.texture === back) return;
+					var front = null;
+					var i_front = -1;
+					for (var i = 0; i < this.current_card.length; i++){
+						if (!this.current_card[i].done && this.current_card[i].texture !== back){
+							if (front){
+								if (front.texture === this.current_card[i].texture){
+									front.done = this.current_card[i].done = true;
+									this.num_cards--;
+								}
+								else{
+									Vue.set(this.current_card, i, {done: false, texture: back});
+									Vue.set(this.current_card, i_front, {done: false, texture: back});
+									this.bad_clicks++;
+									break;
+								}
 							}
 							else{
-								Vue.set(this.current_card, i, {done: false, texture: back});
-								Vue.set(this.current_card, i_front, {done: false, texture: back});
-								this.bad_clicks++;
-								break;
+								front = this.current_card[i];
+								i_front = i;
 							}
 						}
-						else{
-							front = this.current_card[i];
-							i_front = i;
-						}
-					}
-				}			
+					}					
+				}
+			
 			}
 		},
 		computed: {
